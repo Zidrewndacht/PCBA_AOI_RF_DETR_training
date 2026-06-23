@@ -1,0 +1,36 @@
+services:
+  rfdetr:
+    build: .
+    container_name: rfdetr_trainer
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      # HOST PATH (Left) : CONTAINER PATH (Right)
+      # Change the left side if your data moves. The right side is fixed for the script.
+      - D:\!staging\@Mestrado\PCBA-AOI\output_sliced:/workspace/data:ro
+      - ./output_rf_detr:/workspace/output
+      
+      # Mount code and config
+      - ./config.yaml:/workspace/code/config.yaml:ro
+      - ./rfdetr_train.py:/workspace/code/rfdetr_train.py:ro
+    working_dir: /workspace/code
+    
+    command: python rfdetr_train.py
+    stdin_open: true 
+    tty: true       
+    
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1
+      - NCCL_DEBUG=INFO
+      - NCCL_P2P_DISABLE=1
+      - NCCL_IB_DISABLE=1
+      - NCCL_SOCKET_IFNAME=eth0
+      - OMP_NUM_THREADS=1
+      - PYTHONFAULTHANDLER=1
+    shm_size: '16gb' 

@@ -1,0 +1,39 @@
+# config.yaml
+# ==========================================
+# RF-DETR Training Configuration
+# ==========================================
+
+# Paths (native)
+dataset_dir: "D:/!staging/@Mestrado/PCBA-AOI/output_sliced"
+output_dir: "D:/!staging/@Mestrado/PCBA-AOI/rf-detr_training/output"
+
+# Paths (for Docker)
+# dataset_dir: "/workspace/data"
+# output_dir: "/workspace/output"
+
+# Core Training Parameters
+epochs: 100
+batch_size: 8              # Per-GPU batch size
+devices: 2                 # Number of GPUs to use
+resolution: 704
+lr: 0.0001
+seed: 42
+
+# Batch Size Math
+target_effective_batch_size: 16
+
+# Model Settings
+use_ema: true
+checkpoint_interval: 10
+skip_best_epochs: 3
+
+# Early Stopping
+early_stopping: true
+early_stopping_patience: 15
+early_stopping_min_delta: 0.005
+early_stopping_use_ema: true
+
+# Logging & Evaluation
+tensorboard: true
+eval_interval: 1
+log_per_class_metrics: true
