@@ -59,6 +59,6 @@ if __name__ == "__main__":
 
         # Hardware config:
         device="cuda",
-        # strategy="ddp",
-        # devices=cfg["devices"],
+        strategy="ddp",
+        devices=cfg["devices"],
     )

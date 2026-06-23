@@ -4,12 +4,12 @@
 # ==========================================
 
 # Paths (native)
-dataset_dir: "D:/!staging/@Mestrado/PCBA-AOI/output_sliced"
-output_dir: "D:/!staging/@Mestrado/PCBA-AOI/rf-detr_training/output"
+# dataset_dir: "D:/!staging/@Mestrado/PCBA-AOI/output_sliced"
+# output_dir: "D:/!staging/@Mestrado/PCBA-AOI/rf-detr_training/output"
 
 # Paths (for Docker)
-# dataset_dir: "/workspace/data"
-# output_dir: "/workspace/output"
+dataset_dir: "/workspace/data"
+output_dir: "/workspace/output"
 
 # Core Training Parameters
 epochs: 100
