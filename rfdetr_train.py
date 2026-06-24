@@ -1,23 +1,34 @@
-"""
+r"""
 Train RF-DETR-Large on pre-sliced COCO dataset.
 Constants only. No defensive checks. Let it fail naturally.
 
-# Using conda (not really, didn't work)
+# Using conda (only working for single GPU)
 # conda create -p .\conda python=3.11 -y
 # conda activate .\conda
 # pip install "rfdetr[train,loggers]"
-# pip uninstall torch torchvision torchaudio -y #because rfdetr[train] installs the old version by default
+# pip uninstall torch torchvision torchaudio -y #because rfdetr[train] installs the CPU version by default
 # pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu132
 
 Using Docker:
-Transfer data to volume (to avoid constant slow host disk reading):
-    docker run --rm -v /mnt/d/!staging/@Mestrado/PCBA-AOI/output_sliced:/src -v rfdetr_dataset:/dest alpine sh -c "cp -a /src/. /dest/"
-Run script with arguments as required:
-    docker compose run --rm rfdetr python rfdetr_train.py --resume checkpoint.pth
+    docker compose build
+    docker compose up
 
 """
 import yaml
 from rfdetr import RFDETRLarge
+from pathlib import Path
+
+# Fixed container paths (Implementation detail of the Docker environment)
+DATASET_DIR = Path("/workspace/data")
+OUTPUT_DIR = Path("/workspace/output")
+CHECKPOINT_PATH = OUTPUT_DIR / "checkpoint.pth"
+
+if CHECKPOINT_PATH.exists():
+    print(f"Resuming training from {CHECKPOINT_PATH}")
+    resume_arg = str(CHECKPOINT_PATH)
+else:
+    print("No checkpoint found. Starting from scratch.")
+    resume_arg = None
 
 def load_config(config_path="config.yaml"):
     with open(config_path, "r") as f:
@@ -34,7 +45,7 @@ if __name__ == "__main__":
     print(f"Effective batch size: {cfg['batch_size']} (per-GPU) x {cfg['devices']} (GPUs) x {grad_accum} (accum) = {actual_effective}")
     
     # Initialize Model
-    model = RFDETRLarge(resolution=cfg["resolution"])
+    model = RFDETRLarge()
     
     # Start Training
     model.train(
@@ -61,4 +72,10 @@ if __name__ == "__main__":
         device="cuda",
         strategy="ddp",
         devices=cfg["devices"],
+
+        # We don't want naive augmentations here, 
+        # this will get augmented sources from physics-based rendering directly
+        aug_config={},
+
+        resume=resume_arg
     )

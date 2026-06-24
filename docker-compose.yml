@@ -1,5 +1,36 @@
 services:
+  # ==========================================
+  # DATA SYNC SERVICE
+  # ==========================================
+  data-sync:
+    image: alpine:latest
+    volumes:
+      # Mount host directory (Read-Write so we can burn the flag)
+      - D:\!staging\@Mestrado\PCBA-AOI\output_sliced:/src
+      # Mount the Docker volume for the destination
+      - rfdetr_dataset:/dest
+    command: >
+      sh -c "
+      if [ -f /src/.new_data_flag ]; then
+        echo 'Flag found. Wiping and syncing data...';
+        rm -rf /dest/* /dest/.[!.]* /dest/..?* 2>/dev/null || true;
+        cp -a /src/. /dest/;
+        rm -f /src/.new_data_flag;
+        rm -f /dest/.new_data_flag;
+        echo 'Sync complete. Flag burned.';
+      else
+        echo 'No flag found. Skipping sync.';
+        exit 0;
+      fi
+      "
+
+  # ==========================================
+  # RF-DETR TRAINING SERVICE
+  # ==========================================
   rfdetr:
+    depends_on:
+      data-sync:
+        condition: service_completed_successfully
     build: .
     container_name: rfdetr_trainer
     runtime: nvidia
@@ -11,12 +42,10 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      # HOST PATH (Left) : CONTAINER PATH (Right)
-      # Change the left side if your data moves. The right side is fixed for the script.
-      - D:\!staging\@Mestrado\PCBA-AOI\output_sliced:/workspace/data:ro
-      - ./output_rf_detr:/workspace/output
-      
-      # Mount code and config
+      # The training container just mounts the populated volume
+      - rfdetr_dataset:/workspace/data:ro
+      - ./output:/workspace/output
+      - ./roboflow_cache:/root/.roboflow  # <--- ADD THIS LINE
       - ./config.yaml:/workspace/code/config.yaml:ro
       - ./rfdetr_train.py:/workspace/code/rfdetr_train.py:ro
     working_dir: /workspace/code
@@ -34,3 +63,7 @@ services:
       - OMP_NUM_THREADS=1
       - PYTHONFAULTHANDLER=1
     shm_size: '16gb' 
+
+volumes:
+  rfdetr_dataset:
+    name: rfdetr_dataset
