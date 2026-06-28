@@ -10,9 +10,8 @@
 
 # Core Training Parameters
 epochs: 100
-batch_size: 4              # Per-GPU batch size
+batch_size: 2              # Per-GPU batch size
 devices: 2                 # Number of GPUs to use
-# resolution: 704          # Always 704 for RFDETRLarge
 lr: 0.0001
 seed: 42
 
@@ -26,11 +25,11 @@ skip_best_epochs: 3
 
 # Early Stopping
 early_stopping: true
-early_stopping_patience: 15
+early_stopping_patience: 10
 early_stopping_min_delta: 0.005
 early_stopping_use_ema: true
 
 # Logging & Evaluation
-tensorboard: true
+tensorboard: false
 eval_interval: 4
 log_per_class_metrics: true

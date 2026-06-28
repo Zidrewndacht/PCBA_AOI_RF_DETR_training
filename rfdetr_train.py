@@ -21,7 +21,10 @@ from pathlib import Path
 # Fixed container paths (Implementation detail of the Docker environment)
 DATASET_DIR = Path("/workspace/data")
 OUTPUT_DIR = Path("/workspace/output")
-CHECKPOINT_PATH = OUTPUT_DIR / "checkpoint.pth"
+
+# RF-DETR saves full training states (optimizer, epoch, etc.) in .ckpt files.
+# 'last.ckpt' is the standard file used for resuming interrupted training.
+CHECKPOINT_PATH = OUTPUT_DIR / "last.ckpt"
 
 if CHECKPOINT_PATH.exists():
     print(f"Resuming training from {CHECKPOINT_PATH}")
@@ -49,8 +52,8 @@ if __name__ == "__main__":
     
     # Start Training
     model.train(
-        dataset_dir=cfg["dataset_dir"],
-        output_dir=cfg["output_dir"],
+        dataset_dir=DATASET_DIR,
+        output_dir=OUTPUT_DIR,
         epochs=cfg["epochs"],
         batch_size=cfg["batch_size"],
         grad_accum_steps=grad_accum,
