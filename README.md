@@ -27,8 +27,7 @@ Pipeline behaviors are controlled via `config.yaml` and `docker-compose.yml`.
 
 ### Infrastructure (`docker-compose.yml`)
 *   **Host Paths**: The host directory containing the sliced dataset (output from Step 5 of the synthetic data pipeline) must be mapped to the `/src` volume in the `data-sync` service.
-*   **Hardware Allocation**: The `rfdetr` service requests all available NVIDIA GPUs. NCCL environment variables are tuned for standard multi-GPU PCIe topologies (disabling P2P and InfiniBand to prevent initialization hangs on consumer/workstation hardware).
-*   **Shared Memory**: `shm_size` is explicitly set to `16gb` to prevent PyTorch DataLoader worker crashes during high-throughput image reading.
+*   **Hardware Allocation**: The `rfdetr` service requests all available NVIDIA GPUs. NCCL environment variables are tuned for standard multi-GPU PCIe topologies (disabling P2P and InfiniBand to prevent initialization hangs on WSL and consumer/workstation hardware).
 
 ## Main Dependencies
 
