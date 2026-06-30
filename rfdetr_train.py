@@ -1,24 +1,15 @@
-r"""
+"""rfdetr_train.py
 Train RF-DETR-Large on pre-sliced COCO dataset.
-Constants only. No defensive checks. Let it fail naturally.
-
-# Using conda (only working for single GPU)
-# conda create -p .\conda python=3.11 -y
-# conda activate .\conda
-# pip install "rfdetr[train,loggers]"
-# pip uninstall torch torchvision torchaudio -y #because rfdetr[train] installs the CPU version by default
-# pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu132
 
 Using Docker:
     docker compose build
     docker compose up
-
 """
 import yaml
 from rfdetr import RFDETRLarge
 from pathlib import Path
 
-# Fixed container paths (Implementation detail of the Docker environment)
+# Fixed container paths (Implementation detail of the Docker environment, must match the docker-compose YAML)
 DATASET_DIR = Path("/workspace/data")
 OUTPUT_DIR = Path("/workspace/output")
 
@@ -76,8 +67,8 @@ if __name__ == "__main__":
         strategy="ddp",
         devices=cfg["devices"],
 
-        # We don't want naive augmentations here, 
-        # this will get augmented sources from physics-based rendering directly
+        # We do NOT want naive augmentations here, 
+        # this will get pre-augmented sources from physics-based rendering directly
         aug_config={},
 
         resume=resume_arg

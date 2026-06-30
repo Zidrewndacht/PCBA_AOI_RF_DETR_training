@@ -1,12 +1,18 @@
 services:
-  # ==========================================
+  # ======================================================================
   # DATA SYNC SERVICE
-  # ==========================================
+  # This is used to create a Docker volume with source training data
+  # to avoid constantly reading data slowly from the WSL2 host.
+  # ======================================================================
   data-sync:
     image: alpine:latest
     volumes:
+##########################################################################
       # Mount host directory (Read-Write so we can burn the flag)
+      # Set this to the correct folder containing sliced data from 
+      # step 5 of the synthetic data export script suite.
       - D:\!staging\@Mestrado\PCBA-AOI\output_sliced:/src
+##########################################################################     
       # Mount the Docker volume for the destination
       - rfdetr_dataset:/dest
     command: >
@@ -24,9 +30,9 @@ services:
       fi
       "
 
-  # ==========================================
+  # ======================================================================
   # RF-DETR TRAINING SERVICE
-  # ==========================================
+  # ======================================================================
   rfdetr:
     depends_on:
       data-sync:
@@ -45,7 +51,7 @@ services:
       # The training container just mounts the populated volume
       - rfdetr_dataset:/workspace/data:ro
       - ./output:/workspace/output
-      - ./roboflow_cache:/root/.roboflow  # <--- ADD THIS LINE
+      - ./roboflow_cache:/root/.roboflow 
       - ./config.yaml:/workspace/code/config.yaml:ro
       - ./rfdetr_train.py:/workspace/code/rfdetr_train.py:ro
     working_dir: /workspace/code

@@ -1,12 +1,4 @@
 # config.yaml
-# ==========================================
-# RF-DETR Training Configuration
-# ==========================================
-
-# Paths (for native implementation)
-# dataset_dir: "D:/!staging/@Mestrado/PCBA-AOI/output_sliced"
-# output_dir: "D:/!staging/@Mestrado/PCBA-AOI/rf-detr_training/output"
-# For Docker path has no meaning being put here, so it's hardcoded
 
 # Core Training Parameters
 epochs: 100
@@ -29,7 +21,8 @@ early_stopping_patience: 10
 early_stopping_min_delta: 0.005
 early_stopping_use_ema: true
 
-# Logging & Evaluation
-tensorboard: false
-eval_interval: 4
-log_per_class_metrics: true
+# # Logging & Evaluation - 
+# # These are currently missing from the training scripts!
+# tensorboard: false
+# eval_interval: 4
+# log_per_class_metrics: true

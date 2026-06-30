@@ -1,3 +1,4 @@
+# minimal training script for sanity check. Not used for production.
 from rfdetr import RFDETRLarge
 
 def main():
