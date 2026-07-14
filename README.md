@@ -1,10 +1,10 @@
-# PCBA-AOI Training Pipeline
+Docker setup to fine-tuning RF-DETR-Large. This is originally intended for pre-sliced, synthetically generated PCBA datasets, but should work for anything. It handles distributed data parallel (DDP) training, dynamic gradient accumulation, and implements workaround for WSL2 file I/O bottlenecks. 
 
-A containerized training framework for fine-tuning RF-DETR-Large on pre-sliced, synthetically generated PCBA datasets. It handles distributed data parallel (DDP) training, dynamic gradient accumulation, and implements specific workarounds for WSL2 file I/O bottlenecks.
+This README will be debloated/de-slopped at a later time.
 
 ## Overview
 
-The pipeline is designed to train an object detection model on high-resolution image patches without relying on naive in-memory augmentations. The dataset already contains physics-based environmental and defect variations generated during the synthetic rendering phase, so standard training augmentations are explicitly disabled.
+The pipeline is designed to train an object detection model on image slices without relying on naive in-memory augmentations (so it's currently disabled). The dataset already contains physics-based environmental and defect variations generated during the synthetic rendering phase, so standard training augmentations are explicitly disabled (this will be updated with *some*, not all default augmentations once they're verified to be useful).
 
 Because training on large image datasets directly from a Windows host via WSL2 mounts is severely bottlenecked by filesystem translation overhead, the pipeline utilizes a two-stage Docker Compose architecture. It first synchronizes the dataset into a native Docker volume, then executes the training loop inside an isolated CUDA environment to ensure fast, native Linux filesystem I/O with NCCL support for DDP multi-GPU training.
 
