@@ -2,7 +2,7 @@
 
 > **V**ariational **A**nnotation & **R**endering for **I**nspection **A**I
 
-**VARIA-Train** is the model training module of the broader **VARIA** ecosystem (which includes [VARIA-Swarm](https://github.com/Zidrewndacht/PCBA_AOI_synthdata_export) for synthetic data generation and [VARIA-Iris](https://github.com/Zidrewndacht/PCBA_AOI_AR_Inference) for Intel Edge inference). Originally intended for pre-sliced, synthetically generated PCBA datasets, but this should work for training RF-DETR on any dataset, from a multi-GPU Windows machine with WSL2 Docker. It handles distributed data parallel (DDP) training, dynamic gradient accumulation, and a workaround for WSL2 file I/O bottlenecks.
+**VARIA-Train** is the model training module of the broader **VARIA** ecosystem (which includes [VARIA-Swarm](https://github.com/Zidrewndacht/PCBA_AOI_synthdata_export) for synthetic data generation, [VARIA-Craft](#) for manual dataset crafting/editing and [VARIA-Iris](https://github.com/Zidrewndacht/PCBA_AOI_AR_Inference) for edge-device inference). Originally intended for pre-sliced, synthetically generated PCBA datasets, but this should work for training RF-DETR on any dataset, from a multi-GPU Windows machine with WSL2 Docker. It handles distributed data parallel (DDP) training, dynamic gradient accumulation, and a workaround for WSL2 file I/O bottlenecks.
 
 ## Overview
 
