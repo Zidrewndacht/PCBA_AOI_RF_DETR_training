@@ -28,8 +28,22 @@ def load_config(config_path="config.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
+# ==============================================================================
+# RF-DETR ALBUMENTATIONS CONFIGURATION
+# ==============================================================================
+VARIA_AUG_CONFIG = {
+    "Blur": {"p": 0.1},
+    "MotionBlur": {"p": 0.1},
+    "GaussNoise": {"p": 0.2},
+    "JpegCompression": {"quality_lower": 50, "quality_upper": 85, "p": 0.5 },
+    
+    "RandomGamma": {"p": 0.25},
+    "RGBShift": {"p": 0.25},
+    "HueSaturationValue": {"p": 0.5},
+    "RandomBrightnessContrast": {"p": 0.25},
+}
+
 if __name__ == "__main__":
-    # Load configuration
     cfg = load_config("config.yaml")
     
     # Auto-calculate gradient accumulation
@@ -38,10 +52,8 @@ if __name__ == "__main__":
     
     print(f"Effective batch size: {cfg['batch_size']} (per-GPU) x {cfg['devices']} (GPUs) x {grad_accum} (accum) = {actual_effective}")
     
-    # Initialize Model
     model = RFDETRLarge()
     
-    # Start Training
     model.train(
         dataset_dir=DATASET_DIR,
         output_dir=OUTPUT_DIR,
@@ -67,9 +79,8 @@ if __name__ == "__main__":
         strategy="ddp",
         devices=cfg["devices"],
 
-        # We do NOT want naive augmentations here, 
-        # this will get pre-augmented sources from physics-based rendering directly
-        aug_config={},
+        # Injeção do dicionário de augmentações do Albumentations
+        aug_config=VARIA_AUG_CONFIG,
 
         resume=resume_arg
     )
