@@ -31,16 +31,51 @@ def load_config(config_path="config.yaml"):
 # ==============================================================================
 # RF-DETR ALBUMENTATIONS CONFIGURATION
 # ==============================================================================
+#updated according to current documentation: https://albumentations.ai/docs/api-reference/
 VARIA_AUG_CONFIG = {
-    "Blur": {"p": 0.1},
-    "MotionBlur": {"p": 0.1},
-    "GaussNoise": {"p": 0.2},
-    "JpegCompression": {"quality_lower": 50, "quality_upper": 85, "p": 0.5 },
-    
-    "RandomGamma": {"p": 0.25},
-    "RGBShift": {"p": 0.25},
-    "HueSaturationValue": {"p": 0.5},
-    "RandomBrightnessContrast": {"p": 0.25},
+    "Blur": {"p": 0.03},
+    "MotionBlur": {
+        "blur_range":(2, 15),
+        "p": 0.1
+    },
+    "RandomRotate90":{"p": 1.0},
+    "ShotNoise":{
+        "scale_range": (0.03, 0.09),
+        "p":0.25, 
+    }, 
+    "GaussNoise":{
+        "std_range": (0.03, 0.09),
+        "p":0.2, 
+    }, 
+    "SaltAndPepper":{
+        "amount_range":(0.001,0.005),
+        "p":0.2, 
+    },
+    "ImageCompression": {   # relevant as capture is done with MJPEG
+        "quality_range": (50, 85),
+        "p": 0.3
+    },
+    "RandomBrightnessContrast": {
+        "brightness_limit": (-0.2, 0.2),
+        "contrast_limit": (-0.2, 0.2),
+        "p": 0.25
+    },
+    "RandomGamma": {
+        "gamma_limit": (80, 120),
+        "p": 0.25
+    },
+    "RGBShift": {
+        "r_shift_limit": 20,
+        "g_shift_limit": 20,
+        "b_shift_limit": 20,
+        "p": 0.25                 
+    },
+    "HueSaturationValue": {
+        "hue_shift_limit": 10, 
+        "sat_shift_limit": 30,
+        "val_shift_limit": 20,
+        "p": 0.25
+    },
 }
 
 if __name__ == "__main__":
